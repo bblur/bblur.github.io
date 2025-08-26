@@ -29,11 +29,37 @@
             line-height: 1.6;
         }
     </style>
+    <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"187103305", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+    <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"187065663", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+    <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"187204060", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
     <script>
-        function uet_report_conversion()
-        {
+        function uet_report_conversion_health() {
             window.uetq = window.uetq || [];
             window.uetq.push('event', 'purchase', {"event_value":99,"event_category":"shoe"});
+        }
+
+        // Finance Tag
+        function uet_report_conversion_finance() {
+            var uetq_fin = window.uetq_fin || [];
+            window.uetq_fin = uetq_fin;
+            uetq_fin.push('event', 'finance', {"tagId": "187103305"});
+            alert('Finance Tag 187103305 event triggered!');
+        }
+
+        // Government Tag
+        function uet_report_conversion_government() {
+            var uetq_gov = window.uetq_gov || [];
+            window.uetq_gov = uetq_gov;
+            uetq_gov.push('event', 'government', {"tagId": "187065663"});
+            alert('Government Tag 187065663 event triggered!');
+        }
+
+        // Shopify Tag: No Industry
+        function uet_report_conversion_shopify() {
+            var uetq_shop = window.uetq_shop || [];
+            window.uetq_shop = uetq_shop;
+            uetq_shop.push('event', 'shopify', {"tagId": "187204060"});
+            alert('Shopify Tag 187204060 event triggered!');
         }
     </script>    
 </head>
@@ -42,7 +68,10 @@
         <h1>Welcome to My Personal Website!</h1>
         <p>This is my first website built with GitHub Pages. It's simple, but powerful.</p>
         <p>I'll be sharing more content here in the future. Stay tuned!</p>
-        <button id="purchaseConfirmation" onclick="uet_report_conversion()">Click Me to trigger purchase</button>
+        <button id="purchaseConfirmation_1" onclick="uet_report_conversion_health()">Health Tag 187000086</button>
+        <button id="purchaseConfirmation_2" onclick="uet_report_conversion_finance()">Finance Tag 187103305</button>
+        <button id="purchaseConfirmation_3" onclick="uet_report_conversion_government()">Government Tag 187065663</button>
+        <button id="purchaseConfirmation_4" onclick="uet_report_conversion_shopify()">Shopify Tag 187204060</button>
     </div>
 </body>
 </html>
