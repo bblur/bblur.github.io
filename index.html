@@ -1,56 +1,763 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"187235625", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+    <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"187235625", enableAutoSpaTracking:true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","https://bat.bing.com/bat.js","uetq");</script>
     <script>
-        function uet_report_purchase() {
+        window.uetq = window.uetq || [];
+        window.uetq.push('consent', 'default', { 'ad_storage': 'denied' });
+    </script>
+    <script>
+        function updateAdConsent(status) {
             window.uetq = window.uetq || [];
-            window.uetq.push('event', 'purchase', { event_value: 500, event_category: 'ecommerce' });
+            window.uetq.push('consent', 'update', { 'ad_storage': status });
+            localStorage.setItem('brightleaf_ad_consent', status);
         }
 
-        function uet_report_submit() {
-            window.uetq = window.uetq || [];
-            window.uetq.push('event', 'submit', { form_id: 'contact_form' });
+        function acceptAdConsent() {
+            const banner = document.querySelector('[data-consent-banner]');
+
+            updateAdConsent('granted');
+            banner.hidden = true;
         }
+
+        function declineAdConsent() {
+            const banner = document.querySelector('[data-consent-banner]');
+
+            updateAdConsent('denied');
+            banner.hidden = true;
+        }
+
+        function uet_report_purchase() {
+            window.uetq = window.uetq || [];
+            window.uetq.push('event', 'purchase', {
+                event_category: 'ecommerce',
+                event_label: 'Starter Notebook Bundle',
+                event_value: 25,
+                revenue_value: 25,
+                currency: 'USD'
+            });
+        }
+
+        function uet_report_add_to_cart(productName, price) {
+            window.uetq = window.uetq || [];
+            window.uetq.push('event', 'add_to_cart', {
+                event_category: 'notebooks',
+                event_label: productName,
+                event_value: price,
+                revenue_value: price,
+                currency: 'USD'
+            });
+        }
+
+        function addToCart(productName, price) {
+            const cartCount = document.querySelector('[data-cart-count]');
+            const cartMessage = document.querySelector('[data-cart-message]');
+            const nextCount = Number(cartCount.textContent) + 1;
+
+            cartCount.textContent = nextCount;
+            cartMessage.textContent = productName + ' added to cart.';
+            uet_report_add_to_cart(productName, price);
+        }
+
+        function buyNow(productName, price) {
+            const cartMessage = document.querySelector('[data-cart-message]');
+
+            cartMessage.textContent = 'Great pick: ' + productName + ' is ready for checkout.';
+            window.uetq = window.uetq || [];
+            window.uetq.push('event', 'purchase', {
+                event_category: 'notebooks',
+                event_label: productName,
+                event_value: price,
+                revenue_value: price,
+                currency: 'USD'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const banner = document.querySelector('[data-consent-banner]');
+            const storedConsent = localStorage.getItem('brightleaf_ad_consent');
+
+            if (storedConsent === 'granted' || storedConsent === 'denied') {
+                updateAdConsent(storedConsent);
+                banner.hidden = true;
+            } else {
+                banner.hidden = false;
+            }
+        });
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversion Tracking Internal Website</title>
+    <title>BrightLeaf Notebooks | Colorful Notebooks for Big Ideas</title>
     <style>
+        :root {
+            --ink: #171421;
+            --paper: #fffaf0;
+            --sun: #ffcb47;
+            --rose: #ff5a7a;
+            --sky: #42b7ff;
+            --mint: #35c987;
+            --violet: #7d55ff;
+            --shadow: rgba(23, 20, 33, 0.16);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
             margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 16px clamp(18px, 5vw, 72px);
+            background: rgba(255, 250, 240, 0.9);
+            border-bottom: 3px solid var(--ink);
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            color: white;
+            background: var(--ink);
+            border-radius: 7px;
+            box-shadow: 5px 5px 0 var(--sun);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-size: 0.95rem;
+            font-weight: 750;
+        }
+
+        .cart-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 96px;
+            min-height: 38px;
+            padding: 9px 14px;
+            color: white;
+            background: var(--ink);
+            border-radius: 999px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
+            align-items: center;
+            gap: clamp(28px, 6vw, 72px);
+            min-height: calc(100vh - 72px);
+            padding: clamp(32px, 7vw, 90px) clamp(18px, 5vw, 72px) 42px;
+            background:
+                linear-gradient(120deg, rgba(255, 203, 71, 0.42), transparent 34%),
+                linear-gradient(270deg, rgba(66, 183, 255, 0.28), transparent 42%),
+                var(--paper);
+        }
+
+        .hero-copy {
+            max-width: 720px;
+        }
+
+        .tagline {
+            display: inline-flex;
+            margin: 0 0 18px;
+            padding: 8px 12px;
+            color: white;
+            background: var(--rose);
+            border: 3px solid var(--ink);
+            border-radius: 999px;
+            box-shadow: 4px 4px 0 var(--ink);
+            font-size: 0.9rem;
+            font-weight: 900;
+        }
+
+        h1 {
+            max-width: 780px;
+            margin: 0;
+            font-size: clamp(3rem, 7vw, 6.7rem);
+            line-height: 0.94;
+            letter-spacing: 0;
+        }
+
+        .color-pop {
+            color: var(--violet);
+        }
+
+        .color-hot {
+            color: var(--rose);
+        }
+
+        .hero-copy p {
+            max-width: 620px;
+            margin: 24px 0 0;
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
+            line-height: 1.55;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 30px;
+        }
+
+        button,
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 13px 20px;
+            color: var(--ink);
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 5px 5px 0 var(--ink);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 900;
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        button:hover,
+        .button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0 var(--ink);
+        }
+
+        .primary-button {
+            background: var(--sun);
+        }
+
+        .secondary-button {
+            background: var(--mint);
+        }
+
+        .notebook-stack {
+            position: relative;
+            min-height: 420px;
+        }
+
+        .notebook {
+            position: absolute;
+            width: 66%;
+            min-width: 230px;
+            aspect-ratio: 4 / 5;
+            padding: 24px;
+            border: 4px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 12px 12px 0 var(--ink);
+        }
+
+        .notebook::before {
+            content: "";
+            position: absolute;
+            top: 18px;
+            bottom: 18px;
+            left: 34px;
+            width: 4px;
+            background: rgba(23, 20, 33, 0.28);
+        }
+
+        .notebook::after {
+            content: "";
+            position: absolute;
+            inset: 52px 22px 22px 58px;
+            background: repeating-linear-gradient(to bottom, rgba(23, 20, 33, 0.22), rgba(23, 20, 33, 0.22) 2px, transparent 2px, transparent 24px);
+        }
+
+        .notebook.one {
+            top: 10px;
+            right: 44px;
+            background: var(--sky);
+            transform: rotate(8deg);
+        }
+
+        .notebook.two {
+            top: 72px;
+            left: 12px;
+            background: var(--rose);
+            transform: rotate(-10deg);
+        }
+
+        .notebook.three {
+            right: 0;
+            bottom: 4px;
+            background: var(--sun);
+            transform: rotate(3deg);
+        }
+
+        .sticker {
+            position: absolute;
+            right: 22px;
+            bottom: 26px;
+            z-index: 2;
+            width: 118px;
+            height: 118px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: var(--violet);
+            border: 4px solid var(--ink);
+            border-radius: 50%;
+            box-shadow: 7px 7px 0 var(--ink);
+            font-size: 1.35rem;
+            font-weight: 950;
+            line-height: 1;
+            text-align: center;
+            transform: rotate(-9deg);
+        }
+
+        .section {
+            padding: 64px clamp(18px, 5vw, 72px);
+        }
+
+        .section-title {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            max-width: 760px;
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .section-title p {
+            max-width: 360px;
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
             padding: 20px;
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 8px 8px 0 var(--shadow);
+        }
+
+        .product-art {
+            display: grid;
+            min-height: 210px;
+            margin-bottom: 18px;
+            place-items: center;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mini-book {
+            width: 138px;
+            aspect-ratio: 4 / 5;
+            border: 4px solid var(--ink);
+            border-radius: 6px;
+            box-shadow: 10px 10px 0 rgba(23, 20, 33, 0.32);
+            position: relative;
+        }
+
+        .mini-book::before {
+            content: "";
+            position: absolute;
+            inset: 20px auto 20px 24px;
+            width: 4px;
+            background: rgba(23, 20, 33, 0.32);
+        }
+
+        .product-card h3 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .product-card p {
+            flex: 1;
+            margin: 10px 0 18px;
+            line-height: 1.55;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: 950;
+        }
+
+        .badge {
+            padding: 6px 9px;
+            color: white;
+            background: var(--ink);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 900;
+        }
+
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .product-actions button {
+            min-height: 44px;
+            padding: 10px;
+            box-shadow: 4px 4px 0 var(--ink);
+            font-size: 0.9rem;
+        }
+
+        .promo-band {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 24px;
+            color: white;
+            background: var(--ink);
+            border-block: 4px solid var(--ink);
+        }
+
+        .promo-band h2,
+        .promo-band p {
+            color: white;
+        }
+
+        .promo-box {
+            padding: 22px;
+            color: var(--ink);
+            background: var(--sun);
+            border: 3px solid white;
+            border-radius: 8px;
+            box-shadow: 8px 8px 0 rgba(255, 255, 255, 0.25);
+            font-size: 1.35rem;
+            font-weight: 950;
+        }
+
+        .reviews {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        blockquote {
+            margin: 0;
+            padding: 22px;
+            background: white;
+            border: 3px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 7px 7px 0 var(--shadow);
+            line-height: 1.55;
+        }
+
+        blockquote strong {
+            display: block;
+            margin-top: 14px;
+            color: var(--violet);
+        }
+
+        .final-cta {
+            text-align: center;
+            background: linear-gradient(90deg, var(--sky), var(--mint), var(--sun), var(--rose));
+            border-top: 4px solid var(--ink);
+        }
+
+        .final-cta h2 {
+            margin-inline: auto;
+        }
+
+        .final-cta p {
+            max-width: 620px;
+            margin: 18px auto 28px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 24px clamp(18px, 5vw, 72px);
+            color: white;
+            background: var(--ink);
+            font-weight: 750;
             text-align: center;
         }
-        .container {
-            background-color: #fff;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 40px;
+
+        .consent-banner {
+            position: fixed;
+            right: clamp(14px, 4vw, 28px);
+            bottom: clamp(14px, 4vw, 28px);
+            z-index: 10;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 16px;
+            width: min(680px, calc(100vw - 28px));
+            padding: 16px;
+            color: var(--ink);
+            background: white;
+            border: 3px solid var(--ink);
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 8px 8px 0 var(--ink);
         }
-        h1 {
-            color: #007bff;
+
+        .consent-banner[hidden] {
+            display: none;
         }
-        p {
-            line-height: 1.6;
+
+        .consent-banner p {
+            margin: 0;
+            line-height: 1.45;
+            font-weight: 750;
+        }
+
+        .consent-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .consent-actions button {
+            min-height: 40px;
+            padding: 9px 13px;
+            box-shadow: 3px 3px 0 var(--ink);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero,
+            .promo-band {
+                grid-template-columns: 1fr;
+            }
+
+            .products,
+            .reviews {
+                grid-template-columns: 1fr;
+            }
+
+            .notebook-stack {
+                min-height: 360px;
+            }
+
+            .nav-links a {
+                display: none;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .site-header {
+                padding-inline: 14px;
+            }
+
+            .hero {
+                padding-inline: 14px;
+            }
+
+            .product-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .notebook {
+                min-width: 190px;
+            }
+
+            .sticker {
+                width: 96px;
+                height: 96px;
+                font-size: 1.05rem;
+            }
+
+            .consent-banner {
+                grid-template-columns: 1fr;
+            }
+
+            .consent-actions {
+                justify-content: stretch;
+            }
+
+            .consent-actions button {
+                flex: 1;
+            }
         }
     </style>
-    </head>
+</head>
 <body>
-    <div class="container">
-        <h1>Welcome to Conversion Tracking Internal Website!</h1>
-        <p>This is my first website built with GitHub Pages. It's simple, but powerful.</p>
-        <p>I'll be sharing more content here in the future. Stay tuned!</p>
-        <div style="margin-top:20px;">
-            <button id="purchaseBtn" onclick="uet_report_purchase()">Purchase</button>
-            <button id="submitBtn" onclick="uet_report_submit()">Submit</button>
+    <header class="site-header">
+        <a class="brand" href="#top" aria-label="BrightLeaf Notebooks home">
+            <span class="brand-mark">BL</span>
+            <span>BrightLeaf Notebooks</span>
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#shop">Shop</a>
+            <a href="#deal">Deal</a>
+            <a href="#reviews">Reviews</a>
+            <span class="cart-pill">Cart: <span data-cart-count>0</span></span>
+        </nav>
+    </header>
+
+    <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="tagline">Fresh paper. Loud colors. Big plans.</p>
+                <h1 id="hero-title">Sell your ideas to yourself in <span class="color-pop">brilliant</span> <span class="color-hot">notebooks</span>.</h1>
+                <p>Durable covers, smooth pages, bold colors, and layouts made for notes, plans, sketches, lists, and late-night genius.</p>
+                <div class="hero-actions">
+                    <a class="button primary-button" href="#shop">Shop notebooks</a>
+                    <button class="secondary-button" type="button" onclick="buyNow('Starter Notebook Bundle', 500)">Buy bundle now</button>
+                </div>
+                <p data-cart-message aria-live="polite">Pick a notebook and start filling your cart.</p>
+            </div>
+            <div class="notebook-stack" aria-hidden="true">
+                <div class="notebook one"></div>
+                <div class="notebook two"></div>
+                <div class="notebook three"></div>
+                <div class="sticker">3 for<br>$25</div>
+            </div>
+        </section>
+
+        <section class="section" id="shop" aria-labelledby="shop-title">
+            <div class="section-title">
+                <h2 id="shop-title">Notebooks that look good before the first word.</h2>
+                <p>Choose your color, choose your page style, then make the button do the selling.</p>
+            </div>
+
+            <div class="products">
+                <article class="product-card">
+                    <div class="product-art" style="background: #dff5ff;">
+                        <div class="mini-book" style="background: var(--sky);"></div>
+                    </div>
+                    <h3>Skyline Dot Grid</h3>
+                    <p>Flexible dotted pages for diagrams, bullet journals, product ideas, and tidy plans.</p>
+                    <div class="price-row">
+                        <span class="price">$9</span>
+                        <span class="badge">Best for planning</span>
+                    </div>
+                    <div class="product-actions">
+                        <button type="button" onclick="addToCart('Skyline Dot Grid', 9)">Add to cart</button>
+                        <button class="primary-button" type="button" onclick="buyNow('Skyline Dot Grid', 9)">Buy now</button>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <div class="product-art" style="background: #ffe8ee;">
+                        <div class="mini-book" style="background: var(--rose);"></div>
+                    </div>
+                    <h3>Pop Pink Lined</h3>
+                    <p>Clean ruled pages for meeting notes, class notes, letters, drafts, and daily writing.</p>
+                    <div class="price-row">
+                        <span class="price">$8</span>
+                        <span class="badge">Daily favorite</span>
+                    </div>
+                    <div class="product-actions">
+                        <button type="button" onclick="addToCart('Pop Pink Lined', 8)">Add to cart</button>
+                        <button class="primary-button" type="button" onclick="buyNow('Pop Pink Lined', 8)">Buy now</button>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <div class="product-art" style="background: #fff3c2;">
+                        <div class="mini-book" style="background: var(--sun);"></div>
+                    </div>
+                    <h3>Sunburst Sketch</h3>
+                    <p>Blank heavyweight pages for sketches, mind maps, wireframes, and messy first ideas.</p>
+                    <div class="price-row">
+                        <span class="price">$11</span>
+                        <span class="badge">Artist pick</span>
+                    </div>
+                    <div class="product-actions">
+                        <button type="button" onclick="addToCart('Sunburst Sketch', 11)">Add to cart</button>
+                        <button class="primary-button" type="button" onclick="buyNow('Sunburst Sketch', 11)">Buy now</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section promo-band" id="deal" aria-labelledby="deal-title">
+            <div>
+                <h2 id="deal-title">More notebooks, more momentum.</h2>
+                <p>Mix any three notebooks and get the bundle price. Keep one on your desk, one in your bag, and one ready for the next brilliant plan.</p>
+            </div>
+            <div class="promo-box">Bundle deal: 3 notebooks for $25 today.</div>
+        </section>
+
+        <section class="section" id="reviews" aria-labelledby="reviews-title">
+            <div class="section-title">
+                <h2 id="reviews-title">People keep coming back for the paper.</h2>
+                <p>Bright covers get attention. Smooth pages keep the ideas moving.</p>
+            </div>
+            <div class="reviews">
+                <blockquote>"The colors make my desk feel alive, and the pages do not bleed through."<strong>Jamie, planner person</strong></blockquote>
+                <blockquote>"I bought one for notes and came back for a stack. The dot grid is perfect."<strong>Rin, product designer</strong></blockquote>
+                <blockquote>"Simple, sturdy, and fun. Exactly what I want from a notebook."<strong>Marco, teacher</strong></blockquote>
+            </div>
+        </section>
+
+        <section class="section final-cta" aria-labelledby="final-title">
+            <h2 id="final-title">Ready to make paper irresistible?</h2>
+            <p>Grab a single notebook or stock up with the bundle. Your next idea deserves a bright place to land.</p>
+            <button class="primary-button" type="button" onclick="buyNow('Starter Notebook Bundle', 500)">Buy the notebook bundle</button>
+        </section>
+    </main>
+
+    <footer>
+        BrightLeaf Notebooks - colorful paper goods for everyday ideas.
+    </footer>
+
+    <aside class="consent-banner" data-consent-banner hidden aria-label="Cookie consent">
+        <p>We use Microsoft Advertising cookies to measure notebook sales and improve the shop.</p>
+        <div class="consent-actions">
+            <button type="button" onclick="declineAdConsent()">Decline</button>
+            <button class="primary-button" type="button" onclick="acceptAdConsent()">Accept</button>
         </div>
-    </div>
+    </aside>
 </body>
 </html>
